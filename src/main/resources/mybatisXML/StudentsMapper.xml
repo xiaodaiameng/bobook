@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.sp001.mapper.StudentsMapper">
+
+    <resultMap id="StudentsResultMap" type="com.sp001.pojo.Students">
+        <id property="id" column="id"/>
+        <result property="nickname" column="nickname"/>
+        <result property="pwd" column="pwd"/>
+        <result property="purchase_times" column="purchase_times"/>
+        <result property="sales_times" column="sales_times"/>
+    </resultMap>
+
+    <update id="update" parameterType="com.sp001.pojo.Students">
+        UPDATE students
+        SET nickname=#{nickname}, pwd=#{pwd},
+            purchase_times=#{purchase_times}, sales_times=#{sales_times}
+        WHERE id=#{id}
+    </update>
+    <select id="findById" resultMap="StudentsResultMap">
+        SELECT id, nickname, pwd, purchase_times, sales_times  FROM students WHERE id= #{id}
+    </select>
+
+    <select id="findByNickname" resultMap="StudentsResultMap">
+            SELECT id, nickname, pwd, purchase_times, sales_times
+            FROM students WHERE nickname = #{nickname}
+        </select>
+    <insert id="insert" parameterType="com.sp001.pojo.Students" useGeneratedKeys="true" keyProperty="id">
+        INSERT INTO students(nickname, pwd) VALUES (#{nickname}, #{pwd})
+    </insert>
+
+    <delete id="deleteById">
+        DELETE FROM students WHERE id= #{id}
+    </delete>
+</mapper>

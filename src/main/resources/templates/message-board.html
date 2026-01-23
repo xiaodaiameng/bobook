@@ -1,0 +1,447 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>留言板</title>
+    <style type="text/css">
+        /* 页面整体布局 */
+        .page-container {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* 左侧导航栏 - 与首页保持一致 */
+        .sidebar {
+            width: 130px;
+            background-color: #ffeef2; /* 淡粉色背景 */
+            padding: 30px 0;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 15px;
+        }
+
+        .sidebar-nav a {
+            display: block;
+            padding: 10px 30px;
+            color: #333;
+            text-decoration: none;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            font-size: 1rem; /* 小字体 */
+            font-weight: normal; /* 非粗体 */
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            background-color: #ffd9e2; /* hover和激活状态颜色 */
+        }
+
+        /* 留言板样式 */
+        .main-content {
+            flex: 1;
+            padding: 30px;
+        }
+
+        /* 最外层容器 - 增大尺寸 */
+        #div0 {
+            width: 900px;
+            min-height: 550px;
+            border: 5px solid #F3F3F2;
+            margin: 30px auto;
+            padding: 20px;
+            border-radius: 8px;
+        }
+
+        /* 标题区域 */
+        #div1 {
+            background: #f2f9fd;
+            color: #0000ff;
+            width: 100%;
+            height: 40px;
+            line-height: 40px;
+            margin-bottom: 15px;
+            border-radius: 4px;
+        }
+
+        /* 内容区域 */
+        #div2 {
+            background: #f2f9fd;
+            color: #0000ff;
+            width: 100%;
+            min-height: 480px;
+            padding: 15px 0;
+            border-radius: 4px;
+        }
+
+        /* 单元格样式 */
+        .td1 {
+            font-size: 14px;
+            font-weight: bold;
+            line-height: 30px;
+            color: #339966;
+            width: 120px;
+            text-align: center;
+            padding: 10px 5px;
+        }
+
+        /* 标题样式 */
+        .bt1 {
+            font: bold 28px 黑体;
+            padding-left: 20px;
+            color: #0033cc;
+        }
+
+        /* 表单元素样式优化 */
+        input[type="text"] {
+            padding: 8px;
+            font-size: 14px;
+            width: 80%;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        select {
+            padding: 8px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+        }
+
+        textarea {
+            padding: 10px;
+            font-size: 14px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            width: 90%;
+            resize: vertical;
+        }
+
+        input[type="submit"],
+        input[type="reset"] {
+            padding: 8px 20px;
+            font-size: 14px;
+            cursor: pointer;
+            border-radius: 4px;
+            border: 1px solid #ccc;
+        }
+
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            border-color: #45a049;
+        }
+
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+
+        /* 表格样式优化 */
+        table {
+            border-collapse: separate;
+            border-spacing: 0;
+            width: 100%;
+        }
+
+        table tr td {
+            padding: 10px 15px;
+            font-size: 14px;
+        }
+
+        /* 列表样式 */
+        .rules-list {
+            padding-left: 30px;
+            margin-top: 15px;
+        }
+
+        .rules-list li {
+            margin-bottom: 12px;
+            line-height: 1.8;
+            font-size: 16px;
+            color: #555;
+        }
+
+        /* 新增：留言列表样式 */
+        .message-list {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 8px;
+        }
+
+        .message-item {
+            background: white;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 5px;
+            border-left: 4px solid #4CAF50;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+        }
+
+        .message-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .message-name {
+            font-weight: bold;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .message-type {
+            background: #e3f2fd;
+            color: #1976d2;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 12px;
+        }
+
+        .message-content {
+            color: #555;
+            line-height: 1.6;
+            margin: 10px 0;
+            padding: 10px;
+            background: #f9f9f9;
+            border-radius: 3px;
+        }
+
+        .message-time {
+            color: #888;
+            font-size: 12px;
+            text-align: right;
+        }
+
+        .no-messages {
+            text-align: center;
+            padding: 40px;
+            color: #888;
+            font-style: italic;
+        }
+
+        .secret-badge {
+            background: #ff9800;
+            color: white;
+            padding: 2px 6px;
+            border-radius: 3px;
+            font-size: 10px;
+            margin-left: 5px;
+        }
+
+        /* 错误提示样式 */
+        .error-message {
+            background: #ffebee;
+            color: #c62828;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        .success-message {
+            background: #e8f5e9;
+            color: #2e7d32;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 4px;
+            text-align: center;
+            font-weight: bold;
+        }
+
+        /* 消息容器 */
+        .message-container {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 1000;
+            min-width: 300px;
+            opacity: 0;
+            transform: translateY(-20px);
+            transition: all 0.3s ease;
+        }
+
+        .message-container.show {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    </style>
+</head>
+<body>
+<div class="page-container">
+    <!-- 左侧淡粉色导航栏 - 共用导航 -->
+    <aside class="sidebar">
+        <ul class="sidebar-nav">
+            <li><a th:href="@{/button}">首页</a></li>
+            <li><a th:href="@{/my-page}">我的</a></li>
+            <li><a href="#" class="active">留言板</a></li>
+        </ul>
+    </aside>
+
+    <!-- 右侧留言板内容区 -->
+    <main class="main-content">
+        <!-- 消息提示 -->
+        <div th:if="${error}" class="error-message">
+            [[${error}]]
+        </div>
+        <div th:if="${success}" class="success-message">
+            [[${success}]]
+        </div>
+
+        <!-- 以网上留言板块为设计案例 -->
+        <div id="div0" class="">
+            <div id="div1" class="">
+                <table width="100%">
+                    <tr>
+                        <td class="bt1">留言板</td>
+                    </tr>
+                </table>
+            </div>
+            <div id="div2" class="">
+                <!-- 修改表单action -->
+                <form method="post" th:action="@{/submit-message}">
+                    <table width="90%" align="center">
+                        <tr>
+                            <td align="left" style="color:red; font-size:16px; padding:10px 0;">发表留言</td>
+                        </tr>
+                    </table>
+                    <table align="center" border="1" bordercolor="#e0e0e0" width="90%" cellspacing="0px"
+                           cellpadding="0px">
+                        <tr>
+                            <td class="td1">姓&nbsp;&nbsp;&nbsp;&nbsp;名:</td>
+                            <td><input type="text" name="name" size="10" required th:value="${name}"></td>
+                        </tr>
+                        <tr>
+                            <td class="td1">电子邮件:</td>
+                            <td><input type="email" name="email" size="50" required th:value="${email}"></td>
+                        </tr>
+                        <tr>
+                            <td class="td1">分&nbsp;&nbsp;&nbsp;&nbsp;类:</td>
+                            <td style="color:rgba(255,0,0,0.92);font-weight:bold">
+                                <!-- 修改radio按钮 -->
+                                <input type="radio" name="bm" value="不保密" id="public" checked>
+                                <label for="public">不保密</label>
+                                <input type="radio" name="bm" value="保密" id="secret">
+                                <label for="secret">保密</label>
+                                &nbsp;&nbsp;&nbsp;&nbsp;留言类型：
+                                <!-- 修改下拉框 -->
+                                <select name="leixing">
+                                    <option value="其他">请选择类型</option>
+                                    <option value="投诉">投诉</option>
+                                    <option value="咨询">咨询</option>
+                                    <option value="建议">建议</option>
+                                    <option value="反馈">反馈</option>
+                                    <option value="其他">其他</option>
+                                </select>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td class="td1">内&nbsp;&nbsp;&nbsp;&nbsp;容:</td>
+                            <!-- 修改textarea的name属性 -->
+                            <td><textarea name="content" rows="12" cols="70" required th:text="${content}"></textarea></td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" align="center" height="60px">
+                                <input type="submit" value="提交">
+                                &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                <input type="reset" value="清空">
+                            </td>
+                        </tr>
+                        <tr>
+                            <td colspan="2" style="padding:15px;">
+                                <ul class="rules-list">
+                                    <li>请遵守国家有关法律法规，尊重网上道德，承担一切因您的行为而直接或间接引起的法律责任。</li>
+                                    <li>本网站拥有管理笔名和留言的一切权利。</li>
+                                </ul>
+                            </td>
+                        </tr>
+                    </table>
+                </form>
+
+                <!-- 新增：留言列表展示 -->
+                <div class="message-list" th:if="${not #lists.isEmpty(messages)}">
+                    <h3 style="color: #333; margin-bottom: 20px; border-bottom: 2px solid #4CAF50; padding-bottom: 10px;">
+                        📝 留言列表（共 <span th:text="${#lists.size(messages)}">0</span> 条）
+                    </h3>
+
+                    <div class="message-item" th:each="message : ${messages}">
+                        <div class="message-header">
+                            <div>
+                                <span class="message-name" th:text="${message.name}"></span>
+                                <span class="secret-badge" th:if="${message.isSecret == 1}">🔒 保密</span>
+                            </div>
+                            <span class="message-type" th:text="${message.messageType}"></span>
+                        </div>
+                        <div class="message-content" th:text="${message.content}"></div>
+                        <div class="message-time">
+                            📅 留言时间：<span th:text="${#temporals.format(message.createdTime, 'yyyy年MM月dd日 HH:mm')}"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 没有留言时的提示 -->
+                <div class="no-messages" th:if="${#lists.isEmpty(messages)}">
+                    <p style="text-align: center; color: #888; padding: 40px; font-size: 16px;">
+                        ✨ 还没有留言，快来发表第一条留言吧！
+                    </p>
+                </div>
+            </div>
+        </div>
+    </main>
+</div>
+
+<!-- 简单JavaScript用于消息提示 -->
+<script>
+    // 自动隐藏消息提示
+    document.addEventListener('DOMContentLoaded', function() {
+        const messages = document.querySelectorAll('.error-message, .success-message');
+        messages.forEach(function(msg) {
+            setTimeout(function() {
+                msg.style.transition = 'opacity 0.5s ease';
+                msg.style.opacity = '0';
+                setTimeout(function() {
+                    if (msg.parentNode) {
+                        msg.parentNode.removeChild(msg);
+                    }
+                }, 500);
+            }, 3000);
+        });
+
+        // 表单验证
+        const form = document.querySelector('form');
+        form.addEventListener('submit', function(e) {
+            const name = document.querySelector('input[name="name"]').value.trim();
+            const email = document.querySelector('input[name="email"]').value.trim();
+            const content = document.querySelector('textarea[name="content"]').value.trim();
+
+            if (!name) {
+                e.preventDefault();
+                alert('请输入姓名');
+                return false;
+            }
+            if (!email) {
+                e.preventDefault();
+                alert('请输入电子邮件');
+                return false;
+            }
+            if (!content) {
+                e.preventDefault();
+                alert('请输入留言内容');
+                return false;
+            }
+            return true;
+        });
+    });
+</script>
+</body>
+</html>

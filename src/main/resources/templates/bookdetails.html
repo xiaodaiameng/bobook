@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <!-- CSRF 令牌：Spring Boot 后端必需，用于验证请求合法性 -->
+    <meta name="_csrf" th:content="${_csrf.token}">
+    <meta name="_csrf_header" th:content="${_csrf.headerName}">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>书籍详情</title>
+    <link rel="stylesheet" th:href="@{/css/overview.css}">
+    <style type="text/css">
+        /* 页面样式保持不变 */
+        /* 省略重复样式代码... */
+    </style>
+</head>
+<body>
+<div class="page-container">
+    <!-- 左侧导航栏 -->
+    <aside class="sidebar">
+        <ul class="sidebar-nav">
+            <li><a th:href="@{/button}" class="active">首页</a></li> <!-- 修正首页路径为/button -->
+            <li><a th:href="@{/my-page}">我的</a></li>
+            <li><a th:href="@{/message-board}">留言板</a></li>
+        </ul>
+    </aside>
+
+    <!-- 右侧主内容区 -->
+    <main class="main-content">
+        <div class="book-detail-container">
+            <!-- 返回链接：修正为书籍列表页/buybooks -->
+            <a href="#" th:href="@{/buybooks}" class="back-link">
+                <i class="fa fa-arrow-left"></i> 返回书籍列表
+            </a>
+
+            <!-- 书籍基本信息 -->
+            <div class="book-basic-info">
+                <div class="book-main-image">
+                    <!-- 修复图片src引号闭合问题 -->
+                    <img src="@{/images/logo.jpg}" alt="书籍主图" th:alt="${book.bookname}">
+                </div>
+
+                <div class="book-info">
+                    <h2 class="book-title" th:text="${book.bookname}">书籍名称</h2>
+                    <div class="book-meta">
+                        <!-- 若Books实体类无condition和isbn字段，可注释或替换为实际字段（如创建时间） -->
+                        <p><span>成色：</span><span th:text="${book.condition} ?: '暂无设置'">9成新</span></p>
+                        <p><span>ISBN：</span><span th:text="${book.isbn} ?: '暂无设置'">无ISBN</span></p>
+                        <!-- 补充实体类中存在的创建时间字段 -->
+                        <p><span>发布时间：</span><span th:text="${#dates.format(book.created_time, 'yyyy-MM-dd')}">2023-01-01</span></p>
+                    </div>
+
+                    <div class="price-tag">¥<span th:text="${book.price}">0</span></div>
+
+                    <div class="action-buttons">
+                        <button id="buyBtn" class="btn btn-success">购买</button>
+                        <a href="#" class="btn btn-primary" th:href="@{/contact-seller(sellerId=${book.sellerId})}">联系卖家</a>
+
+                        <script>
+                            // 1. 获取 DOM 元素和 CSRF 令牌
+                            const buyBtn = document.getElementById('buyBtn');
+                            const csrfToken = document.querySelector('meta[name="_csrf"]').content;
+                            const csrfHeader = document.querySelector('meta[name="_csrf_header"]').content;
+                            // 2. 购买按钮点击事件
+                            buyBtn.addEventListener('click', async () => {
+                                try {
+                                    const inputPassword = prompt('请输入购买密码（即您的账号密码）：');
+                                    if (!inputPassword) {
+                                        alert('已取消购买');
+                                        return;
+                                    }
+                                    const requestData = {
+                                        bookId: /*[[${book.id}]]*/ 0, // 书籍ID
+                                        buyerId: /*[[${buyerId}]]*/ 0, // 当前买家ID
+                                        sellerId: /*[[${book.sellerId}]]*/ 0, // 卖家ID
+                                        password: inputPassword
+                                    };
+                                    const response = await fetch('/purchase', {
+                                        method: 'POST',
+                                        headers: {
+                                            'Content-Type': 'application/json',
+                                            [csrfHeader]: csrfToken
+                                        },
+                                        body: JSON.stringify(requestData)
+                                    });
+
+                                    const result = await response.json();
+                                    if (result.success) {
+                                        alert('购买成功！即将跳转至成功页');
+                                        window.location.href = '/purchase-success'; // 跳转到成功页
+                                    } else {
+                                        alert(`购买失败：${result.message}`);
+                                    }
+
+                                } catch (error) {
+                                    console.error('购买请求出错：', error);
+                                    alert('网络异常，请稍后再试');
+                                }
+                            });
+                        </script>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 更多图片展示 -->
+            <div class="more-images">
+                <h3 class="section-title">更多图片</h3>
+                <div class="image-gallery">
+                    <div class="gallery-image" th:each="image : ${book.images}">
+                        <img th:src="${image}" th:alt="${book.bookname}图片">
+                    </div>
+                    <!-- 默认图片（无额外图片时显示） -->
+                    <div class="gallery-image" th:if="${book.images == null or book.images.isEmpty()}">
+                        <img src="https://picsum.photos/150/150?random=1" alt="示例图片1">
+                    </div>
+                    <div class="gallery-image" th:if="${book.images == null or book.images.isEmpty()}">
+                        <img src="https://picsum.photos/150/150?random=2" alt="示例图片2">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 卖家留言区 -->
+            <div class="seller-message">
+                <h3 class="section-title">卖家留言</h3>
+                <!-- 若Books实体类无sellerMessage，可改为固定文本或从sellerStudent获取 -->
+                <div class="message-content" th:text="${book.sellerMessage ?: '暂无留言'}">
+                    这本书是我去年购买的，几乎全新，没有任何笔记和划痕。
+                </div>
+            </div>
+
+            <!-- 卖家信息：从sellerStudent对象获取（后端传递的卖家实体） -->
+            <div class="seller-info">
+                <h3 class="section-title">卖家信息</h3>
+                <p><span>用户名：</span><span th:text="${sellerStudent.nickname ?: '未知'}">未知卖家</span></p>
+                <p><span>交易次数：</span><span th:text="${sellerStudent.sales_times ?: 0}">128</span> 次</p>
+            </div>
+        </div>
+    </main>
+</div>
+</body>
+</html>

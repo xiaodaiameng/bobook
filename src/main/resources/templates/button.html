@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>首页</title>
+    <style>
+        /* 页面整体布局 */
+        .page-container {
+            display: flex;
+            min-height: 100vh;
+        }
+        /* 左侧导航栏 */
+        .sidebar {
+            width: 130px;
+            background-color: #ffeef2; /* 淡粉色背景 */
+            padding: 30px 0;
+            box-shadow: 2px 0 5px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .sidebar-nav li {
+            margin-bottom: 15px;
+        }
+
+        .sidebar-nav a {
+            display: block;
+            padding: 10px 30px;
+            color: #333;
+            text-decoration: none;
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            font-size: 1rem; /* 小字体 */
+            font-weight: normal; /* 非粗体 */
+            transition: background-color 0.3s ease;
+        }
+
+        .sidebar-nav a:hover,
+        .sidebar-nav a.active {
+            background-color: #ffd9e2; /*  hover和激活状态颜色 */
+        }
+
+        /* 右侧主内容区 */
+        .main-content {
+            flex: 1;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 0 5%;
+        }
+
+        .big-button {
+            width: 40%;
+            height: 290px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 3px solid rgb(203, 255, 238);
+            border-radius: 20px;
+            background: linear-gradient(to right, #e1fbff, #e3fcf6fb);
+            box-shadow: 5px 5px 15px rgba(255, 219, 246, 0.7);
+            transition: all 0.3s ease;
+        }
+
+        .big-button:hover {
+            transform: scale(1.03);
+            box-shadow: 8px 8px 20px rgba(255, 219, 246, 0.9);
+        }
+
+        .big-button .text-content {
+            font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;
+            font-size: 2rem;
+            color: rgb(9, 9, 9);
+            text-align: center;
+            padding: 20px;
+            margin: 0;
+            font-weight: normal;
+        }
+
+        .big-button a {
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+<div class="page-container">
+    <!-- 左侧淡粉色导航栏 -->
+    <aside class="sidebar">
+        <ul class="sidebar-nav">
+            <!-- 添加 ?. 避免loginUser为null时的空指针错误，虽然但是没必要，只是有个印象 -->
+            <li>用户：[[${session.loginUser?.nickname ?: '未登录'}]]</li>
+            <li><a href="#" class="active">首页</a></li>
+            <li><a th:href="@{/my-page}">我的</a></li>
+            <li><a th:href="@{/message-board}">留言板</a></li>
+        </ul>
+    </aside>
+
+    <!-- 右侧主内容区 -->
+    <main class="main-content">
+        <!-- 我要买书按钮 -->
+        <div class="big-button">
+            <a th:href="@{/buybooks}">
+                <div class="text-content">我要买书</div>
+            </a>
+        </div>
+
+        <!-- 我要卖书按钮 -->
+        <div class="big-button">
+            <a th:href="@{/sellbooks}">
+                <div class="text-content">我要卖书</div>
+            </a>
+        </div>
+    </main>
+</div>
+</body>
+</html>

@@ -1,0 +1,112 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>注册</title>
+    <style>
+        html,
+        body {
+            height: 100%;
+        }
+
+        body {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding-top: 40px;
+            padding-bottom: 40px;
+            background-color: #f5f5f5;
+        }
+
+        .form-signin {
+            width: 100%;
+            max-width: 330px;
+            padding: 25px;
+            margin: 0 auto;
+            text-align: center;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .form-signin .logo-container {
+            margin-bottom: 20px;
+        }
+
+        .form-signin .logo-container img {
+            margin: 0 auto;
+        }
+
+        .form-signin .form-control {
+            position: relative;
+            box-sizing: border-box;
+            height: auto;
+            padding: 12px;
+            font-size: 16px;
+            text-align: left;
+        }
+
+        .form-signin .form-control:focus {
+            z-index: 2;
+        }
+
+        .register-title {
+            margin-bottom: 25px;
+            font-weight: 500;
+        }
+
+        .error-message {
+            color: red;
+            margin-bottom: 15px;
+        }
+
+        .login-link {
+            margin: 15px 0;
+        }
+
+        .copyright {
+            margin-top: 20px;
+            color: #6c757d;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .submit-btn {
+            margin-top: 15px;
+        }
+    </style>
+</head>
+
+<body>
+<form class="form-signin" th:action="@{/register}" method="post">
+    <div class="logo-container">
+        <img th:src="@{/images/login.jpg}" alt="网站Logo" width="145" height="115">
+    </div>
+
+    <h1 class="h3 mb-3 font-weight-normal register-title">注册</h1>
+
+    <p th:text="${registerMsg}" class="error-message"></p>
+
+    <div class="form-group">
+        <input type="text" name="nickname" class="form-control" placeholder="账号" required>
+    </div>
+    <div class="form-group">
+        <input type="password" name="pwd" class="form-control" placeholder="密码" required>
+    </div>
+    <div class="form-group">
+        <input type="password" name="repwd" class="form-control" placeholder="确认密码" required>
+    </div>
+
+    <button class="btn btn-lg btn-primary btn-block submit-btn" type="submit">注 册</button>
+
+    <div class="login-link">
+        <a th:href="@{/login}" class="float-right">已有账号？去登录</a>
+    </div>
+
+    <p class="copyright">©喵喵外婆的花田</p>
+</form>
+</body>
+</html>

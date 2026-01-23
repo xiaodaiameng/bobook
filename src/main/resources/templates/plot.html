@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title th:text="${title}">图表展示</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        .plot-container {
+            margin: 30px auto;
+            max-width: 800px;
+            box-shadow: 0 0 10px #ccc;
+            padding: 20px;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+    </style>
+</head>
+<body>
+<h1 th:text="${title}">图表展示</h1>
+
+<div class="plot-container">
+    <!-- 展示Base64编码的图像 -->
+    <img th:src="'data:image/png;base64,' + ${imageBase64}"
+         alt="生成的图表">
+</div>
+
+<form action="/plot" method="get">
+    <label for="title">图表标题:</label>
+    <input type="text" id="title" name="title" th:value="${title}">
+
+    <label for="count" style="margin-left: 20px;">数据点数量:</label>
+    <input type="number" id="count" name="count" min="5" max="100" value="20">
+
+    <button type="submit" style="margin-left: 10px;">生成新图表</button>
+</form>
+</body>
+</html>
