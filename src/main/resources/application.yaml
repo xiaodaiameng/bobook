@@ -1,19 +1,15 @@
-# 应用名称
 spring:
   application:
     name: sp001
   
-  # 数据库连接配置（替代 mybatis.xml 中的 <environments>）
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/sp001_db?useSSL=false&serverTimezone=UTC&characterEncoding=utf8
-    username: root
-    password: 123456
+    url: ${DB_URL:jdbc:mysql://localhost:3306/sp001_db?useSSL=false&serverTimezone=UTC&characterEncoding=utf8}
+    username: ${DB_USERNAME:root}
+    password: ${DB_PASSWORD:123456}
 
-# MyBatis 配置（替代 mybatis.xml 中的其他配置）
 mybatis:
   mapper-locations: classpath:mybatisXML/*.xml
   type-aliases-package: com.sp001.pojo
   configuration:
     map-underscore-to-camel-case: true
-

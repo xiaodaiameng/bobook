@@ -1,0 +1,21 @@
+24:2026-01-24T16:25:00.304Z ERROR 1 --- [sp001] [nio-8080-exec-5] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] in context with path [] threw exception [Request processing failed: org.springframework.jdbc.BadSqlGrammarException: 
+26:### The error may exist in class path resource [mybatisXML/StudentsMapper.xml]
+27:### The error may involve defaultParameterMap
+28:### The error occurred while setting parameters
+34:	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:112) ~[mysql-connector-j-9.3.0.jar!/:9.3.0]
+35:	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:114) ~[mysql-connector-j-9.3.0.jar!/:9.3.0]
+120:2026-01-24T16:25:00.315Z ERROR 1 --- [sp001] [nio-8080-exec-5] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] threw exception
+123:	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:112) ~[mysql-connector-j-9.3.0.jar!/:9.3.0]
+124:	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:114) ~[mysql-connector-j-9.3.0.jar!/:9.3.0]
+233:2026-01-24T16:25:00.319Z ERROR 1 --- [sp001] [nio-8080-exec-5] o.a.c.c.C.[.[.[/].[dispatcherServlet]    : Servlet.service() for servlet [dispatcherServlet] threw exception
+236:	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:112) ~[mysql-connector-j-9.3.0.jar!/:9.3.0]
+237:	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:114) ~[mysql-connector-j-9.3.0.jar!/:9.3.0]
+346:2026-01-24T16:25:00.323Z ERROR 1 --- [sp001] [nio-8080-exec-5] o.a.c.c.C.[Tomcat].[localhost]           : Exception Processing [ErrorPage[errorCode=0, location=/error]]
+350:### The error may exist in class path resource [mybatisXML/StudentsMapper.xml]
+351:### The error may involve defaultParameterMap
+352:### The error occurred while setting parameters
+420:### The error may exist in class path resource [mybatisXML/StudentsMapper.xml]
+421:### The error may involve defaultParameterMap
+422:### The error occurred while setting parameters
+459:	at com.mysql.cj.jdbc.exceptions.SQLError.createSQLException(SQLError.java:112) ~[mysql-connector-j-9.3.0.jar!/:9.3.0]
+460:	at com.mysql.cj.jdbc.exceptions.SQLExceptionsMapping.translateException(SQLExceptionsMapping.java:114) ~[mysql-connector-j-9.3.0.jar!/:9.3.0]
