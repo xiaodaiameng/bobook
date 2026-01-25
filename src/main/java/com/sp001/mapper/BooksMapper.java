@@ -12,9 +12,6 @@ public interface BooksMapper {
     int insertBook(Books books);
     int deleteBook(@Param("id") int id);
     Books getBookById(@Param("id") Integer id);
-
-    // 添加缺失的方法
     List<Books> findAllBooks();
     int updateBook(Books books);
-    int deleteBookById(@Param("id") int id);
 }

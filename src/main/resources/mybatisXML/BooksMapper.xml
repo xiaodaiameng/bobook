@@ -13,6 +13,7 @@
 
     <select id="findAllBooks" resultMap="BooksResultMap">
         SELECT id, bookname, price, sellerId, buyerId, created
+        FROM books
     </select>
 
     <select id="findByBookname" resultMap="BooksResultMap">
@@ -29,7 +30,7 @@
         UPDATE books SET bookname=#{bookname}, price=#{price}, sellerId=#{sellerId}, buyerId=#{buyerId}, created_time=#{created_time} WHERE id=#{id}
     </update>
 
-    <delete id="deleteBookById">
+    <delete id="deleteBook">
         DELETE FROM books WHERE id=#{id}
     </delete>
     <!-- 新增：通过ID查询书籍 -->

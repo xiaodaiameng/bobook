@@ -141,9 +141,8 @@ public class JumpController {
         model.addAttribute("buyerId", currentBuyer.getId()); // 补充传递买家ID到前端
         return "bookdetails";
     }
-    // 修正购买接口逻辑
     @PostMapping("/purchase")
-    @Transactional // 补充正确的事务注解包
+    @Transactional
     public String purchase(
             @RequestParam Integer bookId,
             @RequestParam String password,
@@ -155,22 +154,36 @@ public class JumpController {
             return "redirect:/login";
         }
 
-        // 修正：使用booksMapper获取书籍
-        Books book = booksMapper.getBookById(bookId); // 原代码错误：books.getId(bookId)
+        Books book = booksMapper.getBookById(bookId);
         if (book == null) {
             model.addAttribute("error", "书籍不存在");
             return "bookdetails";
         }
-        Students seller = studentsMapper.findById(book.getSellerId()); // 原代码错误：student.getStudentById(...)
+
+        // 检查是否已售出
+        if (book.getBuyerId() != 0) {
+            model.addAttribute("error", "书籍已售出");
+            return "bookdetails";
+        }
+
+        // 验证密码
         if (!password.equals(currentBuyer.getPwd())) {
             model.addAttribute("error", "密码错误");
             return "bookdetails";
         }
+
+        // 更新购买次数和销售次数
         currentBuyer.setPurchase_times(currentBuyer.getPurchase_times() + 1);
+        Students seller = studentsMapper.findById(book.getSellerId());
         seller.setSales_times(seller.getSales_times() + 1);
 
+        // 更新书籍状态
+        book.setBuyerId(currentBuyer.getId());
+
+        // 保存所有更改
         studentsMapper.update(currentBuyer);
         studentsMapper.update(seller);
+        booksMapper.updateBook(book);  // 添加这行！
 
         return "redirect:/purchase-success";
     }

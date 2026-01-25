@@ -10,7 +10,13 @@ public class Books {
     private int price;
     private Timestamp created_time;
 
+    public void setId(int id) {
+        this.id = id;
+    }
 
+    public void setCreated_time(Timestamp created_time) {
+        this.created_time = created_time;
+    }
 
     public int getId() {
         return id;
@@ -46,6 +52,10 @@ public class Books {
 
     public void setPrice(int price) {
         this.price = price;
+    }
+
+    public int getBuyerId() {
+        return buyerId;
     }
 
     public Books() {
