@@ -14,4 +14,6 @@ public interface BooksMapper {
     Books getBookById(@Param("id") Integer id);
     List<Books> findAllBooks();
     int updateBook(Books books);
+    List<Books> findBooksBySellerId(@Param("sellerId") int sellerId);
+
 }

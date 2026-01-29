@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.sp001.mapper.MessagesMapper">
+
+    <!-- 插入留言 -->
+    <insert id="insertMessage" parameterType="com.sp001.pojo.Message">
+        INSERT INTO messages (name, email, content, message_type, is_secret, status)
+        VALUES (#{name}, #{email}, #{content}, #{messageType}, #{isSecret}, #{status})
+    </insert>
+
+    <!-- 查询所有留言（不含私密留言） -->
+    <select id="selectAllPublicMessages" resultType="com.sp001.pojo.Message">
+        SELECT id, name, email, content, message_type as messageType,
+               created_time as createdTime, is_secret as isSecret, status
+        FROM messages
+        WHERE (is_secret = 0 OR status = 1)
+        ORDER BY created_time DESC
+    </select>
+
+    <!-- 查询所有留言（管理员用） -->
+    <select id="selectAllMessages" resultType="com.sp001.pojo.Message">
+        SELECT id, name, email, content, message_type as messageType,
+               created_time as createdTime, is_secret as isSecret, status
+        FROM messages
+        ORDER BY created_time DESC
+    </select>
+
+    <!-- 更新留言状态 -->
+    <update id="updateMessageStatus">
+        UPDATE messages SET status = #{status} WHERE id = #{id}
+    </update>
+
+    <!-- 删除留言 -->
+    <delete id="deleteMessage">
+        DELETE FROM messages WHERE id = #{id}
+    </delete>
+</mapper>

@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 @Controller
@@ -111,10 +112,6 @@ public class JumpController {
         model.addAttribute("booksMap", booksMap); // 空集合会触发前端提示
         return "buybooks";
     }
-    @GetMapping("/sellbooks")
-    public String sellBooks() {
-        return "sellbooks";
-    }
 
     // 修正书籍详情页逻辑
     @GetMapping("/bookdetails/{bookId}")
@@ -190,5 +187,77 @@ public class JumpController {
     @GetMapping("/purchase-success")
     public String purchaseSuccess() {
         return "purchase-success";
+    }
+
+    @PostMapping("/sellbooks")
+    public String sellBooks(
+            @RequestParam("bookname") String bookname,
+            @RequestParam("price") Integer price,
+            HttpSession session,
+            RedirectAttributes redirectAttributes) {
+
+        // 检查用户是否登录
+        Students seller = (Students) session.getAttribute("loginUser");
+        if (seller == null) {
+            redirectAttributes.addFlashAttribute("error", "请先登录");
+            return "redirect:/login";
+        }
+
+        // 验证参数
+        if (bookname == null || bookname.trim().isEmpty()) {
+            redirectAttributes.addFlashAttribute("error", "书籍名称不能为空");
+            return "redirect:/sellbooks";
+        }
+
+        if (price == null || price <= 0) {
+            redirectAttributes.addFlashAttribute("error", "请输入有效的价格");
+            return "redirect:/sellbooks";
+        }
+
+        try {
+            // 创建书籍对象
+            Books book = new Books();
+            book.setBookname(bookname.trim());
+            book.setPrice(price);
+            book.setSellerId(seller.getId());
+            book.setBuyerId(null); // 初始时没有买家
+
+            // 插入数据库
+            int result = booksMapper.insertBook(book);
+
+            if (result > 0) {
+                // 更新卖家的销售次数
+                seller.setSales_times(seller.getSales_times() + 1);
+                studentsMapper.update(seller);
+
+                redirectAttributes.addFlashAttribute("success", "书籍发布成功！");
+            } else {
+                redirectAttributes.addFlashAttribute("error", "发布失败，请重试");
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            redirectAttributes.addFlashAttribute("error", "系统错误，请稍后重试");
+        }
+
+        return "redirect:/sellbooks";
+    }
+
+    // 同时修改GET方法，使其能显示成功/错误信息
+    @GetMapping("/sellbooks")
+    public String sellBooks(Model model) {
+        return "sellbooks";
+    }
+
+    @GetMapping("/my-books")
+    public String myBooks(Model model, HttpSession session) {
+        Students user = (Students) session.getAttribute("loginUser");
+        if (user == null) {
+            return "redirect:/login";
+        }
+
+        List<Books> myBooks = booksMapper.findBooksBySellerId(user.getId());
+        model.addAttribute("myBooks", myBooks);
+        return "my-books";
     }
 }

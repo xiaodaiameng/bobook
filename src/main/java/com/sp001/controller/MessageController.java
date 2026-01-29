@@ -22,7 +22,7 @@ public class MessageController {
     @GetMapping("/message-board")
     public String showMessageBoard(Model model) {
         // 获取公开留言
-        List<Message> messages = messagesMapper.selectPublicMessages();
+        List<Message> messages = messagesMapper.selectAllPublicMessages();
         model.addAttribute("messages", messages);
         return "message-board";
     }

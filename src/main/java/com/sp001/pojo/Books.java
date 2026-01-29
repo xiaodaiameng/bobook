@@ -6,7 +6,7 @@ public class Books {
     private int id;
     private String bookname;
     private int sellerId;
-    private int buyerId;
+    private Integer buyerId;
     private int price;
     private Timestamp created_time;
 
@@ -46,7 +46,7 @@ public class Books {
         this.sellerId = sellerId;
     }
 
-    public void setBuyerId(int buyerId) {
+    public void setBuyerId(Integer buyerId) {
         this.buyerId = buyerId;
     }
 
@@ -54,14 +54,14 @@ public class Books {
         this.price = price;
     }
 
-    public int getBuyerId() {
+    public Integer getBuyerId() {
         return buyerId;
     }
 
     public Books() {
     }
 
-    public Books(int id, String bookname, int sellerId, int buyerId, int price, Timestamp created_time) {
+    public Books(int id, String bookname, int sellerId, Integer buyerId, int price, Timestamp created_time) {
         this.id = id;
         this.bookname = bookname;
         this.sellerId = sellerId;

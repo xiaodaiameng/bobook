@@ -22,8 +22,9 @@
         WHERE bookname LIKE CONCAT('%', #{keyword}, '%')
     </select>
 
-    <insert id="insertBook" parameterType="com.sp001.pojo.Books" useGeneratedKeys="true" keyProperty="id">
-        INSERT INTO books(bookname, price, seller_id) VALUES (#{bookname}, #{price}, #{sellerId})
+    <insert id="insertBook" parameterType="com.sp001.pojo.Books">
+        INSERT INTO books (bookname, price, sellerId, buyerId, created_time)
+        VALUES (#{bookname}, #{price}, #{sellerId}, #{buyerId}, NOW())
     </insert>
 
     <update id="updateBook" parameterType="com.sp001.pojo.Books">
@@ -33,10 +34,16 @@
     <delete id="deleteBook">
         DELETE FROM books WHERE id=#{id}
     </delete>
-    <!-- 新增：通过ID查询书籍 -->
+
     <select id="getBookById" resultMap="BooksResultMap">
         SELECT id, bookname, price, sellerId, buyerId
         FROM books
         WHERE id = #{id} <!-- #{id}对应接口中@Param("id")的参数 -->
+    </select>
+
+    <select id="findBooksBySellerId" resultType="com.sp001.pojo.Books">
+        SELECT * FROM books
+        WHERE sellerId = #{sellerId}
+        ORDER BY created_time DESC
     </select>
 </mapper>
